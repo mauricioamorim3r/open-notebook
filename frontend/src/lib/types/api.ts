@@ -109,6 +109,9 @@ export interface CreateSourceRequest {
   delete_source?: boolean
   // New async processing support
   async_processing?: boolean
+  // Oráculo: document type and version metadata
+  doc_type?: string
+  version_ref?: string
 }
 
 export interface UpdateNoteRequest {

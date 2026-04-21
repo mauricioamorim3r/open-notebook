@@ -32,7 +32,7 @@ export const enUS = {
     podcast: "Podcast",
     quickActions: "Quick actions",
     quickActionsDesc: "Navigation, search, ask, theme",
-    appName: "Open Notebook",
+    appName: "Oráculo",
     add: "Add",
     remove: "Remove",
     confirm: "Confirm",
@@ -191,7 +191,7 @@ export const enUS = {
     localDevLabel: "For local development",
   },
   auth: {
-    loginTitle: "Open Notebook",
+    loginTitle: "Oráculo",
     loginDesc: "Enter your password to access the application",
     passwordPlaceholder: "Password",
     signingIn: "Signing in...",
@@ -216,6 +216,9 @@ export const enUS = {
     language: "Toggle language",
     theme: "Theme",
     ask: "Ask",
+    analyze: "Analyze",
+    analysis: "Analysis",
+    procedure: "Procedure",
   },
   notebooks: {
     title: "Notebooks",

@@ -32,7 +32,7 @@ export const ptBR = {
     podcast: "Podcast",
     quickActions: "Ações rápidas",
     quickActionsDesc: "Navegação, busca, perguntar, tema",
-    appName: "Open Notebook",
+    appName: "Oráculo",
     add: "Adicionar",
     remove: "Remover",
     confirm: "Confirmar",
@@ -191,7 +191,7 @@ export const ptBR = {
     localDevLabel: "Para desenvolvimento local",
   },
   auth: {
-    loginTitle: "Open Notebook",
+    loginTitle: "Oráculo",
     loginDesc: "Digite sua senha para acessar o aplicativo",
     passwordPlaceholder: "Senha",
     signingIn: "Entrando...",
@@ -216,6 +216,9 @@ export const ptBR = {
     language: "Alternar idioma",
     theme: "Tema",
     ask: "Perguntar",
+    analyze: "Analisar",
+    analysis: "Análise",
+    procedure: "Procedimento",
   },
   notebooks: {
     title: "Cadernos",

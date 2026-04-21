@@ -61,6 +61,8 @@ export const sourcesApi = {
     formData.append('embed', String(data.embed ?? false))
     formData.append('delete_source', String(data.delete_source ?? false))
     formData.append('async_processing', String(data.async_processing ?? false))
+    if (data.doc_type) formData.append('doc_type', data.doc_type)
+    if (data.version_ref) formData.append('version_ref', data.version_ref)
     
     const response = await apiClient.post<SourceResponse>('/sources', formData)
     return response.data

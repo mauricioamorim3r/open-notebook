@@ -37,6 +37,9 @@ const createSourceSchema = z.object({
   transformations: z.array(z.string()).optional(),
   embed: z.boolean(),
   async_processing: z.boolean(),
+  // Oráculo metadata
+  doc_type: z.string().optional(),
+  version_ref: z.string().optional(),
 }).refine((data) => {
   if (data.type === 'link') {
     return !!data.url && data.url.trim() !== ''
@@ -308,6 +311,8 @@ export function AddSourceDialog({
       embed: data.embed,
       delete_source: false,
       async_processing: true,
+      doc_type: data.doc_type,
+      version_ref: data.version_ref,
     }
 
     if (data.type === 'upload' && data.file) {

@@ -17,11 +17,8 @@ async def get_auth_status():
     Returns whether a password is required to access the API.
     Supports Docker secrets via OPEN_NOTEBOOK_PASSWORD_FILE.
     """
-    auth_enabled = bool(get_secret_from_env("OPEN_NOTEBOOK_PASSWORD"))
-
+    # Oráculo: single local user, authentication permanently disabled
     return {
-        "auth_enabled": auth_enabled,
-        "message": "Authentication is required"
-        if auth_enabled
-        else "Authentication is disabled",
+        "auth_enabled": False,
+        "message": "Authentication is disabled",
     }

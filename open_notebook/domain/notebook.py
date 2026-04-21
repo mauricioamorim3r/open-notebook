@@ -296,6 +296,14 @@ class Source(ObjectModel):
     command: Optional[Union[str, RecordID]] = Field(
         default=None, description="Link to surreal-commands processing job"
     )
+    # Oráculo: document classification and versioning
+    doc_type: Optional[str] = Field(
+        default=None,
+        description="Document type: norm | regulation | procedure | specification | other",
+    )
+    version_ref: Optional[str] = Field(
+        default=None, description="Document version or revision reference"
+    )
 
     @field_validator("command", mode="before")
     @classmethod

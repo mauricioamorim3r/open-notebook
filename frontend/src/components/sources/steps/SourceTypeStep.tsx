@@ -22,6 +22,9 @@ interface CreateSourceFormData {
   transformations?: string[]
   embed: boolean
   async_processing: boolean
+  // Oráculo metadata
+  doc_type?: string
+  version_ref?: string
 }
 
 // Helper functions for batch URL parsing
@@ -350,6 +353,45 @@ export function SourceTypeStep({ control, register, setValue, errors, urlValidat
             {t('sources.batchCommonSettings')}
           </p>
         </div>
+      )}
+
+      {/* Oráculo: document classification */}
+      {!isBatchMode && (
+        <FormSection
+          title="Classificação do Documento (Opcional)"
+          description="Classifique o documento para habilitar análises avançadas"
+        >
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label htmlFor="doc_type" className="mb-1.5 block text-xs">
+                Tipo de Documento
+              </Label>
+              <select
+                id="doc_type"
+                {...register('doc_type')}
+                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              >
+                <option value="">Selecionar tipo...</option>
+                <option value="norm">Norma</option>
+                <option value="regulation">Regulamento</option>
+                <option value="procedure">Procedimento</option>
+                <option value="specification">Especificação</option>
+                <option value="other">Outro</option>
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="version_ref" className="mb-1.5 block text-xs">
+                Referência de Versão
+              </Label>
+              <Input
+                id="version_ref"
+                {...register('version_ref')}
+                placeholder="Ex: Rev. 3, 2024-01"
+                autoComplete="off"
+              />
+            </div>
+          </div>
+        </FormSection>
       )}
     </div>
   )

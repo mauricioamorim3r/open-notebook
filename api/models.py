@@ -304,6 +304,14 @@ class SourceCreate(BaseModel):
     async_processing: bool = Field(
         False, description="Whether to process source asynchronously"
     )
+    # Oráculo: document classification
+    doc_type: Optional[str] = Field(
+        None,
+        description="Document type: norm | regulation | procedure | specification | other",
+    )
+    version_ref: Optional[str] = Field(
+        None, description="Document version or revision reference"
+    )
 
     @model_validator(mode="after")
     def validate_notebook_fields(self):
@@ -328,6 +336,8 @@ class SourceCreate(BaseModel):
 class SourceUpdate(BaseModel):
     title: Optional[str] = Field(None, description="Source title")
     topics: Optional[List[str]] = Field(None, description="Source topics")
+    doc_type: Optional[str] = Field(None, description="Document type")
+    version_ref: Optional[str] = Field(None, description="Version reference")
 
 
 class SourceResponse(BaseModel):
@@ -347,6 +357,9 @@ class SourceResponse(BaseModel):
     processing_info: Optional[Dict] = None
     # Notebook associations
     notebooks: Optional[List[str]] = None
+    # Oráculo fields
+    doc_type: Optional[str] = None
+    version_ref: Optional[str] = None
 
 
 class SourceListResponse(BaseModel):
@@ -684,3 +697,105 @@ class NotebookDeleteResponse(BaseModel):
     unlinked_sources: int = Field(
         ..., description="Number of sources unlinked from notebook"
     )
+
+
+# ---------------------------------------------------------------------------
+# Oráculo — Document governance, analysis and procedure generation
+# ---------------------------------------------------------------------------
+
+
+class DocumentVersionCreate(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
+    source: str = Field(..., description="Source ID this version belongs to")
+    version_number: str = Field(..., description="Version or revision label")
+    status: str = Field("draft", description="draft | in_review | approved | obsolete")
+    revision_date: Optional[str] = Field(None, description="ISO date of revision")
+    author: Optional[str] = Field(None, description="Author of this revision")
+    change_summary: Optional[str] = Field(None, description="Summary of changes")
+
+
+class DocumentVersionResponse(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
+    id: str
+    source: str
+    version_number: str
+    status: str
+    revision_date: Optional[str] = None
+    author: Optional[str] = None
+    change_summary: Optional[str] = None
+    created: str
+    updated: str
+
+
+class RequirementCreate(BaseModel):
+    source: str = Field(..., description="Source ID where the requirement originates")
+    section: Optional[str] = Field(None, description="Section reference in source")
+    content: str = Field(..., description="Requirement statement")
+    req_type: str = Field("mandatory", description="mandatory | recommended | optional")
+    tags: Optional[List[str]] = Field(None, description="Classification tags")
+
+
+class RequirementResponse(BaseModel):
+    id: str
+    source: str
+    section: Optional[str] = None
+    content: str
+    req_type: str
+    tags: Optional[List[str]] = None
+    created: str
+    updated: str
+
+
+class CompareRequest(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
+    source_a_id: str = Field(..., description="ID of the first source document")
+    source_b_id: str = Field(..., description="ID of the second source document")
+    model_id: Optional[str] = Field(None, description="Override LLM model ID")
+
+
+class CompareResponse(BaseModel):
+    source_a_id: str
+    source_b_id: str
+    source_a_title: Optional[str] = None
+    source_b_title: Optional[str] = None
+    comparison_report: str
+
+
+class AdherenceRequest(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
+    document_id: str = Field(
+        ..., description="Source ID of the document being audited"
+    )
+    reference_id: str = Field(
+        ..., description="Source ID of the norm / regulation to check against"
+    )
+    model_id: Optional[str] = Field(None, description="Override LLM model ID")
+
+
+class AdherenceResponse(BaseModel):
+    document_id: str
+    reference_id: str
+    document_title: Optional[str] = None
+    reference_title: Optional[str] = None
+    adherence_report: str
+
+
+class ProcedureGenerateRequest(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
+    scope: str = Field(
+        ..., description="Description of the procedure to generate (scope / objective)"
+    )
+    context_source_ids: Optional[List[str]] = Field(
+        None, description="Source IDs to use as reference material"
+    )
+    model_id: Optional[str] = Field(None, description="Override LLM model ID")
+
+
+class ProcedureGenerateResponse(BaseModel):
+    scope: str
+    procedure_output: str

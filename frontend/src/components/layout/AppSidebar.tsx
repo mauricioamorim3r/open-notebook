@@ -41,6 +41,8 @@ import {
   Plus,
   Wrench,
   Command,
+  FileSearch2,
+  ClipboardList,
 } from 'lucide-react'
 
 const getNavigation = (t: TFunction) => [
@@ -61,6 +63,13 @@ const getNavigation = (t: TFunction) => [
     title: t('navigation.create'),
     items: [
       { name: t('navigation.podcasts'), href: '/podcasts', icon: Mic },
+    ],
+  },
+  {
+    title: t('navigation.analyze'),
+    items: [
+      { name: t('navigation.analysis'), href: '/analysis', icon: FileSearch2 },
+      { name: t('navigation.procedure'), href: '/procedure', icon: ClipboardList },
     ],
   },
   {

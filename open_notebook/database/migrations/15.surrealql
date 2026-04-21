@@ -1,0 +1,41 @@
+-- Migration 15: Oráculo Document Governance
+-- Adds doc_type / version_ref to source table
+-- Creates: document_version, requirement, audit_log tables
+
+-- ─── SOURCE EXTENSIONS ──────────────────────────────────────────────────────
+DEFINE FIELD IF NOT EXISTS doc_type    ON TABLE source TYPE option<string>;
+DEFINE FIELD IF NOT EXISTS version_ref ON TABLE source TYPE option<string>;
+
+-- ─── DOCUMENT VERSION ────────────────────────────────────────────────────────
+DEFINE TABLE IF NOT EXISTS document_version SCHEMAFULL;
+
+DEFINE FIELD IF NOT EXISTS source         ON TABLE document_version TYPE record<source>;
+DEFINE FIELD IF NOT EXISTS version_number ON TABLE document_version TYPE string;
+DEFINE FIELD IF NOT EXISTS status         ON TABLE document_version TYPE string DEFAULT 'draft';
+DEFINE FIELD IF NOT EXISTS revision_date  ON TABLE document_version TYPE option<datetime>;
+DEFINE FIELD IF NOT EXISTS author         ON TABLE document_version TYPE option<string>;
+DEFINE FIELD IF NOT EXISTS change_summary ON TABLE document_version TYPE option<string>;
+DEFINE FIELD IF NOT EXISTS created        ON TABLE document_version DEFAULT time::now() VALUE $before OR time::now();
+DEFINE FIELD IF NOT EXISTS updated        ON TABLE document_version DEFAULT time::now() VALUE time::now();
+
+-- ─── REQUIREMENT ─────────────────────────────────────────────────────────────
+DEFINE TABLE IF NOT EXISTS requirement SCHEMAFULL;
+
+DEFINE FIELD IF NOT EXISTS source    ON TABLE requirement TYPE record<source>;
+DEFINE FIELD IF NOT EXISTS section   ON TABLE requirement TYPE option<string>;
+DEFINE FIELD IF NOT EXISTS content   ON TABLE requirement TYPE string;
+DEFINE FIELD IF NOT EXISTS req_type  ON TABLE requirement TYPE string DEFAULT 'mandatory';
+DEFINE FIELD IF NOT EXISTS tags      ON TABLE requirement TYPE option<array<string>>;
+DEFINE FIELD IF NOT EXISTS embedding ON TABLE requirement TYPE option<array<float>>;
+DEFINE FIELD IF NOT EXISTS created   ON TABLE requirement DEFAULT time::now() VALUE $before OR time::now();
+DEFINE FIELD IF NOT EXISTS updated   ON TABLE requirement DEFAULT time::now() VALUE time::now();
+
+-- ─── AUDIT LOG ────────────────────────────────────────────────────────────────
+DEFINE TABLE IF NOT EXISTS audit_log SCHEMAFULL;
+
+DEFINE FIELD IF NOT EXISTS action      ON TABLE audit_log TYPE string;
+DEFINE FIELD IF NOT EXISTS entity_type ON TABLE audit_log TYPE string;
+DEFINE FIELD IF NOT EXISTS entity_id   ON TABLE audit_log TYPE string;
+DEFINE FIELD IF NOT EXISTS user_agent  ON TABLE audit_log TYPE option<string>;
+DEFINE FIELD IF NOT EXISTS details     ON TABLE audit_log TYPE option<object>;
+DEFINE FIELD IF NOT EXISTS created     ON TABLE audit_log DEFAULT time::now() VALUE $before OR time::now();

@@ -105,6 +105,8 @@ def parse_source_form_data(
     embed: str = Form("false"),  # Accept as string, convert to bool
     delete_source: str = Form("false"),  # Accept as string, convert to bool
     async_processing: str = Form("false"),  # Accept as string, convert to bool
+    doc_type: Optional[str] = Form(None),
+    version_ref: Optional[str] = Form(None),
     file: Optional[UploadFile] = File(None),
 ) -> tuple[SourceCreate, Optional[UploadFile]]:
     """Parse form data into SourceCreate model and return upload file separately."""
@@ -149,6 +151,8 @@ def parse_source_form_data(
             embed=embed_bool,
             delete_source=delete_source_bool,
             async_processing=async_processing_bool,
+            doc_type=doc_type,
+            version_ref=version_ref,
         )
         pass  # SourceCreate instance created successfully
     except Exception as e:
@@ -383,6 +387,8 @@ async def create_source(
                 title=source_data.title or "Processing...",
                 topics=[],
                 asset=source_asset,
+                doc_type=source_data.doc_type,
+                version_ref=source_data.version_ref,
             )
             await source.save()
 
@@ -462,6 +468,8 @@ async def create_source(
                 source = Source(
                     title=source_data.title or "Processing...",
                     topics=[],
+                    doc_type=source_data.doc_type,
+                    version_ref=source_data.version_ref,
                 )
                 await source.save()
 

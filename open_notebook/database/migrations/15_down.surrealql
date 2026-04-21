@@ -1,0 +1,8 @@
+-- Migration 15 Down: Remove Oráculo Document Governance additions
+
+REMOVE TABLE IF EXISTS audit_log;
+REMOVE TABLE IF EXISTS requirement;
+REMOVE TABLE IF EXISTS document_version;
+
+REMOVE FIELD IF EXISTS version_ref ON TABLE source;
+REMOVE FIELD IF EXISTS doc_type    ON TABLE source;

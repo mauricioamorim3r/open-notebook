@@ -12,7 +12,7 @@ from fastapi.responses import JSONResponse
 from loguru import logger
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from api.auth import PasswordAuthMiddleware
+from api.auth import PasswordAuthMiddleware  # kept for import compatibility
 from api.routers import (
     auth,
     chat,
@@ -36,6 +36,13 @@ from api.routers import (
     transformations,
 )
 from api.routers import commands as commands_router
+from api.routers import (
+    adherence,
+    comparison,
+    document_versions,
+    procedure,
+    requirements,
+)
 from open_notebook.database.async_migrate import AsyncMigrationManager
 from open_notebook.exceptions import (
     AuthenticationError,
@@ -155,7 +162,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Open Notebook API",
+    title="Oráculo API",
     description="API for Open Notebook - Research Assistant",
     lifespan=lifespan,
 )
@@ -170,20 +177,8 @@ if CORS_IS_DEFAULT_WILDCARD:
 else:
     logger.info(f"CORS allowed origins: {CORS_ALLOWED_ORIGINS}")
 
-# Add password authentication middleware first
-# Exclude /api/auth/status and /api/config from authentication
-app.add_middleware(
-    PasswordAuthMiddleware,
-    excluded_paths=[
-        "/",
-        "/health",
-        "/docs",
-        "/openapi.json",
-        "/redoc",
-        "/api/auth/status",
-        "/api/config",
-    ],
-)
+# Oráculo: single local user — authentication removed
+# app.add_middleware(PasswordAuthMiddleware, excluded_paths=[...])
 
 # Add CORS middleware last (so it processes first)
 app.add_middleware(
@@ -310,11 +305,17 @@ app.include_router(chat.router, prefix="/api", tags=["chat"])
 app.include_router(source_chat.router, prefix="/api", tags=["source-chat"])
 app.include_router(credentials.router, prefix="/api", tags=["credentials"])
 app.include_router(languages.router, prefix="/api", tags=["languages"])
+# Oráculo — document governance, analysis and procedure generation
+app.include_router(document_versions.router, prefix="/api", tags=["document-versions"])
+app.include_router(requirements.router, prefix="/api", tags=["requirements"])
+app.include_router(comparison.router, prefix="/api", tags=["comparison"])
+app.include_router(adherence.router, prefix="/api", tags=["adherence"])
+app.include_router(procedure.router, prefix="/api", tags=["procedure"])
 
 
 @app.get("/")
 async def root():
-    return {"message": "Open Notebook API is running"}
+    return {"message": "Oráculo API is running"}
 
 
 @app.get("/health")
